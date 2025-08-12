@@ -1,0 +1,49 @@
+import random
+
+# List of predefined words
+words = ["python", "hangman", "program", "coding", "debug"]
+
+# Randomly select a word
+word_to_guess = random.choice(words)
+guessed_letters = []
+wrong_guesses = 0
+max_wrong_guesses = 6
+
+print("Welcome to Hangman!")
+print("_ " * len(word_to_guess))  # Initial blanks
+
+# Game loop
+while wrong_guesses < max_wrong_guesses:
+    guess = input("Guess a letter: ").lower()
+
+    if not guess.isalpha() or len(guess) != 1:
+        print("Please enter a single letter.")
+        continue
+
+    if guess in guessed_letters:
+        print("You already guessed that letter.")
+        continue
+
+    guessed_letters.append(guess)
+
+    if guess in word_to_guess:
+        print("Good guess!")
+    else:
+        print("Wrong guess!")
+        wrong_guesses += 1
+
+    # Display current progress
+    display_word = ""
+    for letter in word_to_guess:
+        if letter in guessed_letters:
+            display_word += letter + " "
+        else:
+            display_word += "_ "
+    print(display_word)
+
+    # Check if player has guessed all letters
+    if "_" not in display_word:
+        print("🎉 Congratulations! You guessed the word!")
+        break
+else:
+    print(f"💀 Game Over! The word was '{word_to_guess}'.")

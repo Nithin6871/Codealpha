@@ -1,0 +1,80 @@
+import csv
+
+def stock_portfolio_tracker():
+    """
+    A simple stock portfolio tracker that calculates total investment value.
+    """
+    # Hardcoded dictionary of stock prices
+    stock_prices = {
+        "AAPL": 180.00,
+        "TSLA": 250.00,
+        "MSFT": 320.00,
+        "AMZN": 130.00,
+        "GOOGL": 145.00
+    }
+
+    # Initialize total investment value
+    total_investment = 0.0
+
+    print("Welcome to the Stock Portfolio Tracker!")
+    print("Available stocks and their prices:")
+    for stock, price in stock_prices.items():
+        print(f"  {stock}: ${price:.2f}")
+
+    portfolio = {}
+    while True:
+        stock_name = input("Enter a stock ticker (e.g., AAPL) or type 'done' to finish: ").upper()
+        if stock_name == "DONE":
+            break
+        
+        if stock_name in stock_prices:
+            try:
+                quantity = int(input(f"Enter the quantity of {stock_name}: "))
+                if quantity > 0:
+                    portfolio[stock_name] = quantity
+                    investment = stock_prices[stock_name] * quantity
+                    total_investment += investment
+                else:
+                    print("Quantity must be a positive number.")
+            except ValueError:
+                print("Invalid input. Please enter a whole number for the quantity.")
+        else:
+            print(f"'{stock_name}' is not a valid stock ticker in our list.")
+
+    print("\n--- Your Portfolio ---")
+    for stock, quantity in portfolio.items():
+        price = stock_prices[stock]
+        value = price * quantity
+        print(f"  {stock}: {quantity} shares @ ${price:.2f} each = ${value:.2f}")
+
+    print(f"\nTotal Investment Value: ${total_investment:.2f}")
+
+    # Optional: Save the results to a file
+    save_option = input("Do you want to save the results to a file? (yes/no): ").lower()
+    if save_option == 'yes':
+        file_name = input("Enter a filename (e.g., portfolio.csv or portfolio.txt): ")
+        try:
+            if file_name.endswith('.csv'):
+                with open(file_name, 'w', newline='') as csvfile:
+                    csv_writer = csv.writer(csvfile)
+                    csv_writer.writerow(['Stock', 'Quantity', 'Price', 'Value'])
+                    for stock, quantity in portfolio.items():
+                        price = stock_prices[stock]
+                        value = price * quantity
+                        csv_writer.writerow([stock, quantity, price, value])
+                    csv_writer.writerow(['Total Investment', '', '', total_investment])
+                print(f"Portfolio saved to {file_name}")
+            else: # Default to .txt
+                with open(file_name, 'w') as file:
+                    file.write("--- Stock Portfolio Report ---\n")
+                    for stock, quantity in portfolio.items():
+                        price = stock_prices[stock]
+                        value = price * quantity
+                        file.write(f"{stock}: {quantity} shares @ ${price:.2f} each = ${value:.2f}\n")
+                    file.write(f"\nTotal Investment Value: ${total_investment:.2f}\n")
+                print(f"Portfolio saved to {file_name}")
+        except IOError:
+            print("Error: Could not write to file.")
+
+# Run the tracker
+stock_portfolio_tracker()
